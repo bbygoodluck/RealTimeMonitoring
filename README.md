@@ -7,3 +7,6 @@
 - Compiler : gcc 10.0
 - IDE : CodeLite 14.0
 
+## ScreenShot
+
+![main](screenshot/screenshot.png "ScreenShot")
