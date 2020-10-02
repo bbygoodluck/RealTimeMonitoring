@@ -22,6 +22,7 @@ typedef struct _CPUINFO {
 	unsigned int   _iCpuCoreCount  = 0;         // CPU 코어갯수
 	unsigned long  _ulCPUTotalUage = 0;         // 전체 CPU 사용량
 	unsigned long* _pArrayCore     = nullptr;   // CPU 코어별 사용량
+	wxString _strProcessorName     = wxT("");
 } CPUINFO;
 
 typedef struct _MEMINFO {

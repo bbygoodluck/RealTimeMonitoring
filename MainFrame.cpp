@@ -10,12 +10,32 @@ wxEND_EVENT_TABLE()
 CMainFrame::CMainFrame(const wxString& strTitle)
 	: wxFrame(nullptr, wxID_ANY, strTitle, wxDefaultPosition, wxSize(1700, 900))
 {
+	wxColour mainBackCol(220, 220, 220);
+	
 	SetIcon(wxIcon("wxwin"));
 	
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
+	this->SetBackgroundColour(mainBackCol);
+	
 	wxBoxSizer* m_SizeMain;
 	m_SizeMain = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* bSizer121;
+	bSizer121 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("Processor Info : "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText3->Wrap( -1 );
+	m_staticText3->SetFont(wxSystemSettings::GetFont(wxSYS_SYSTEM_FIXED_FONT));
+	m_staticText3->SetBackgroundColour(mainBackCol);
+	bSizer121->Add( m_staticText3, 0, wxBOTTOM|wxTOP|wxLEFT, 5 );
+
+	m_staticCPUInfo = new wxStaticText( this, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticCPUInfo->Wrap( -1 );
+	m_staticCPUInfo->SetFont(wxSystemSettings::GetFont(wxSYS_SYSTEM_FIXED_FONT));
+	m_staticCPUInfo->SetBackgroundColour(mainBackCol);
+	bSizer121->Add( m_staticCPUInfo, 1, wxBOTTOM|wxTOP, 5 );
+
+	m_SizeMain->Add( bSizer121, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
@@ -59,7 +79,11 @@ CMainFrame::CMainFrame(const wxString& strTitle)
 
 	this->Centre( wxBOTH );
 	
-	theMonitoring->StartMonitoring();	
+	wxString strProcessorInfo = theSystemInfo->GetProcessorName();
+	strProcessorInfo += wxString::Format(wxT(" / CPU Core : %d"), theSystemInfo->GetCPUCoreCount());
+	m_staticCPUInfo->SetLabelText(strProcessorInfo);
+	
+	theMonitoring->StartMonitoring();
 }
 
 CMainFrame::~CMainFrame()

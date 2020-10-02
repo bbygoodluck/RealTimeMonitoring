@@ -70,6 +70,11 @@ unsigned long CSystemInfo::GetCPUCoreUsage(int iIndex)
 	return m_pCPUInfoImpl->GetCPUInfo()->_pArrayCore[iIndex];
 }
 
+wxString CSystemInfo::GetProcessorName() const
+{
+	return m_pCPUInfoImpl->GetProcessorName();
+}
+
 void CSystemInfo::GetMemoryInfo(unsigned long long &ullTotalRam, unsigned long long &ullAvaRam)
 {
 	ullTotalRam = m_pMemInfoImpl->GetMemInfo()->ullPhysicalTotalRam;

@@ -35,6 +35,7 @@ public:
 	void SetPGTerminte(bool bTerminate) {m_bProgramTerminated = bTerminate; }
 	bool GetPGTerminate() const { return m_bProgramTerminated; }
 	bool GetCommandLineOfProcess(unsigned long ulProcessID, wxString& strCommandLine);
+	wxString GetProcessorName() const;
 	
 private:
 	static std::unique_ptr<CSystemInfo> m_pInstance;

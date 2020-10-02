@@ -20,9 +20,11 @@ public:
 	CPUINFO* GetCPUInfo() {
 		return m_pCPUInfo;
 	}
-
+	
+	wxString GetProcessorName() const; 
 private:
 	void Initialize();
+	void SetProcessorInfo(CPUINFO* pInfo);
 	
 private:
 	CPUINFO* m_pCPUInfo;

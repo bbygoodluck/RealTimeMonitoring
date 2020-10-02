@@ -15,7 +15,9 @@ private:
 	wxAuiNotebook* m_auiNBSpectrum;
 	wxAuiNotebook* m_auiNBCPUGraph;
 	wxAuiNotebook* m_auiNBProcessTotal;
-
+	wxStaticText* m_staticText3;
+	wxStaticText* m_staticCPUInfo;
+	
 private:
 	void OnClose(wxCloseEvent& event);
 	void OnMaximized(wxMaximizeEvent& event);

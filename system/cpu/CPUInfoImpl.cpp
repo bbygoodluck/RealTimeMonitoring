@@ -53,6 +53,8 @@ void CCPUInfoImpl::Initialize()
 			assert(status == ERROR_SUCCESS);
 		}
 	}
+	
+	SetProcessorInfo(m_pCPUInfo);
 #endif
 }
 
@@ -79,4 +81,25 @@ void CCPUInfoImpl::UpdateInfo()
 		m_pCPUInfo->_pArrayCore[c1] = (unsigned long)PFC_Value.doubleValue;
 	}
 #endif
+}
+
+void CCPUInfoImpl::SetProcessorInfo(CPUINFO* pInfo)
+{
+#ifdef __WXMSW__
+	wchar_t wCpuInfo[100] = {0x00, };
+	HKEY hKey;
+	DWORD dwSize = sizeof(wCpuInfo);
+	
+	//레지스트리를 조사하여 프로세서의 모델명을 얻어냅니다.
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Hardware\\Description\\System\\CentralProcessor\\0", 0, KEY_QUERY_VALUE, &hKey);         
+    RegQueryValueEx(hKey, L"ProcessorNameString", NULL, NULL, (LPBYTE)wCpuInfo, &dwSize);  
+    RegCloseKey(hKey);
+	
+	pInfo->_strProcessorName = wCpuInfo;
+#endif
+}
+
+wxString CCPUInfoImpl::GetProcessorName() const
+{
+	return m_pCPUInfo->_strProcessorName;
 }

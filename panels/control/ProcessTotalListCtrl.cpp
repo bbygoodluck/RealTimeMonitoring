@@ -34,7 +34,7 @@ void CProcessTotalListCtrl::InitColumn()
 		{wxT("WorkingSet")      , 140, wxLIST_FORMAT_RIGHT},
 		{wxT("File Description"), 270, wxLIST_FORMAT_LEFT},
 		{wxT("Company Name")    , 180, wxLIST_FORMAT_LEFT},
-		{wxT("FullPath")        , 450, wxLIST_FORMAT_LEFT},
+		{wxT("FullPath")        , 440, wxLIST_FORMAT_LEFT},
 	};
 
 	for (unsigned int i = 0; i < WXSIZEOF(lstColumn); i++)
