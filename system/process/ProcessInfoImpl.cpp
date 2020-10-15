@@ -4,6 +4,48 @@
 #include "FileVersionInfo.h"
 #include "../../panels/PanelProcessTotal.h"
 
+/*
+ * SE_xxxx 선언은 <ddk/wdm.h> 헤더에 적용되어 있으나
+ * wdm.h 헤더를 include하게되면 컴파일 에러가 발생함
+ * 하여 SE_xxxx 선언을 직접 가져와 처리함
+ */
+#define SE_MIN_WELL_KNOWN_PRIVILEGE         2
+#define SE_CREATE_TOKEN_PRIVILEGE           2
+#define SE_ASSIGNPRIMARYTOKEN_PRIVILEGE     3
+#define SE_LOCK_MEMORY_PRIVILEGE            4
+#define SE_INCREASE_QUOTA_PRIVILEGE         5
+#define SE_MACHINE_ACCOUNT_PRIVILEGE        6
+#define SE_TCB_PRIVILEGE                    7
+#define SE_SECURITY_PRIVILEGE               8
+#define SE_TAKE_OWNERSHIP_PRIVILEGE         9
+#define SE_LOAD_DRIVER_PRIVILEGE            10
+#define SE_SYSTEM_PROFILE_PRIVILEGE         11
+#define SE_SYSTEMTIME_PRIVILEGE             12
+#define SE_PROF_SINGLE_PROCESS_PRIVILEGE    13
+#define SE_INC_BASE_PRIORITY_PRIVILEGE      14
+#define SE_CREATE_PAGEFILE_PRIVILEGE        15
+#define SE_CREATE_PERMANENT_PRIVILEGE       16
+#define SE_BACKUP_PRIVILEGE                 17
+#define SE_RESTORE_PRIVILEGE                18
+#define SE_SHUTDOWN_PRIVILEGE               19
+#define SE_DEBUG_PRIVILEGE                  20
+#define SE_AUDIT_PRIVILEGE                  21
+#define SE_SYSTEM_ENVIRONMENT_PRIVILEGE     22
+#define SE_CHANGE_NOTIFY_PRIVILEGE          23
+#define SE_REMOTE_SHUTDOWN_PRIVILEGE        24
+#define SE_UNDOCK_PRIVILEGE                 25
+#define SE_SYNC_AGENT_PRIVILEGE             26
+#define SE_ENABLE_DELEGATION_PRIVILEGE      27
+#define SE_MANAGE_VOLUME_PRIVILEGE          28
+#define SE_IMPERSONATE_PRIVILEGE            29
+#define SE_CREATE_GLOBAL_PRIVILEGE          30
+#define SE_TRUSTED_CREDMAN_ACCESS_PRIVILEGE 31
+#define SE_RELABEL_PRIVILEGE                32
+#define SE_INC_WORKING_SET_PRIVILEGE        33
+#define SE_TIME_ZONE_PRIVILEGE              34
+#define SE_CREATE_SYMBOLIC_LINK_PRIVILEGE   35
+#define SE_MAX_WELL_KNOWN_PRIVILEGE         SE_CREATE_SYMBOLIC_LINK_PRIVILEGE
+
 CProcessInfoImpl::CProcessInfoImpl()
 	: m_pWatchProcess(nullptr)
 {
@@ -77,8 +119,8 @@ void CProcessInfoImpl::Initialize()
 bool CProcessInfoImpl::SetEnableTokenPrivilege(LPCTSTR pszPrivilege)
 {
 	HANDLE hToken		 = 0;
-	TOKEN_PRIVILEGES tkp = {0}; 
-	LUID luid;
+//	TOKEN_PRIVILEGES tkp = {0}; 
+//	LUID luid;
 	// Get a token for this process. 
 	if (!OpenProcessToken(GetCurrentProcess(),
 						  TOKEN_ADJUST_PRIVILEGES |
@@ -86,8 +128,43 @@ bool CProcessInfoImpl::SetEnableTokenPrivilege(LPCTSTR pszPrivilege)
 	{
         return false;
 	}
+	
+	CHAR privilegesBuffer[FIELD_OFFSET(TOKEN_PRIVILEGES, Privileges) + sizeof(LUID_AND_ATTRIBUTES) * 9];
+	PTOKEN_PRIVILEGES privileges;
+	ULONG i;
+	
+	privileges = (PTOKEN_PRIVILEGES)privilegesBuffer;
+	privileges->PrivilegeCount = 9;
 
-	// Get the LUID for the privilege. 
+	for (i = 0; i < privileges->PrivilegeCount; i++)
+	{
+		privileges->Privileges[i].Attributes = SE_PRIVILEGE_ENABLED;
+		privileges->Privileges[i].Luid.HighPart = 0;
+	}
+	
+	privileges->Privileges[0].Luid.LowPart = SE_DEBUG_PRIVILEGE;
+	privileges->Privileges[1].Luid.LowPart = SE_INC_BASE_PRIORITY_PRIVILEGE;
+	privileges->Privileges[2].Luid.LowPart = SE_INC_WORKING_SET_PRIVILEGE;
+	privileges->Privileges[3].Luid.LowPart = SE_LOAD_DRIVER_PRIVILEGE;
+	privileges->Privileges[4].Luid.LowPart = SE_PROF_SINGLE_PROCESS_PRIVILEGE;
+	privileges->Privileges[5].Luid.LowPart = SE_BACKUP_PRIVILEGE;
+	privileges->Privileges[6].Luid.LowPart = SE_RESTORE_PRIVILEGE;
+	privileges->Privileges[7].Luid.LowPart = SE_SHUTDOWN_PRIVILEGE;
+	privileges->Privileges[8].Luid.LowPart = SE_TAKE_OWNERSHIP_PRIVILEGE;
+	
+	AdjustTokenPrivileges(hToken,                  //HANDLE
+						  FALSE,                   //BOOL(DisableAllPrivileges
+						  privileges,              //NewState 
+						  0,                       //BufferLength
+						  (PTOKEN_PRIVILEGES)NULL, //PreviousState
+						  0);                      //ReturnLength
+
+	if (GetLastError() != ERROR_SUCCESS)
+		return false;
+	
+	return true;
+		
+/*	// Get the LUID for the privilege. 
 	if(LookupPrivilegeValue(NULL, pszPrivilege, &luid))//&tkp.Privileges[0].Luid)) 
 	{
         tkp.PrivilegeCount = 1;  // one privilege to set    
@@ -107,7 +184,7 @@ bool CProcessInfoImpl::SetEnableTokenPrivilege(LPCTSTR pszPrivilege)
 		return true;
 	}
 
-	return false;
+	return false;*/
 }
 //void CProcessInfoImpl::AddNewProcess(const PROCESSENTRY& pe32, bool bCreateNew)
 void CProcessInfoImpl::AddNewProcess(const WTS_PROCESS_INFO& wtsProcessInfo, bool bCreateNew)

@@ -2,7 +2,7 @@
 
 - ## The RealTimeMonitoring is simple realtime system monitoring tool
 
-## Develop Envorinment
+## Development Envorinment
 
 - Compiler : gcc 10.0
 - IDE : CodeLite 14.0
