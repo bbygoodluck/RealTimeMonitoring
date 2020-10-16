@@ -129,28 +129,39 @@ bool CProcessInfoImpl::SetEnableTokenPrivilege(LPCTSTR pszPrivilege)
         return false;
 	}
 	
-	CHAR privilegesBuffer[FIELD_OFFSET(TOKEN_PRIVILEGES, Privileges) + sizeof(LUID_AND_ATTRIBUTES) * 9];
+	int iArrayPrivileges[] = {
+		SE_DEBUG_PRIVILEGE,
+		SE_INC_BASE_PRIORITY_PRIVILEGE,
+		SE_INC_WORKING_SET_PRIVILEGE,
+		SE_LOAD_DRIVER_PRIVILEGE,
+		SE_PROF_SINGLE_PROCESS_PRIVILEGE,
+		SE_BACKUP_PRIVILEGE,
+		SE_RESTORE_PRIVILEGE,
+		SE_SHUTDOWN_PRIVILEGE,
+		SE_TAKE_OWNERSHIP_PRIVILEGE,
+		SE_ASSIGNPRIMARYTOKEN_PRIVILEGE,
+		SE_TCB_PRIVILEGE,
+		SE_MACHINE_ACCOUNT_PRIVILEGE,
+		SE_INCREASE_QUOTA_PRIVILEGE,
+		SE_TRUSTED_CREDMAN_ACCESS_PRIVILEGE,
+		SE_SYSTEM_PROFILE_PRIVILEGE,
+		SE_SYSTEMTIME_PRIVILEGE
+	};
+	
+	constexpr int iPrivilegeCount = WXSIZEOF(iArrayPrivileges);
+	CHAR privilegesBuffer[FIELD_OFFSET(TOKEN_PRIVILEGES, Privileges) + sizeof(LUID_AND_ATTRIBUTES) * iPrivilegeCount];
 	PTOKEN_PRIVILEGES privileges;
 	ULONG i;
 	
 	privileges = (PTOKEN_PRIVILEGES)privilegesBuffer;
-	privileges->PrivilegeCount = 9;
+	privileges->PrivilegeCount = iPrivilegeCount;
 
 	for (i = 0; i < privileges->PrivilegeCount; i++)
 	{
 		privileges->Privileges[i].Attributes = SE_PRIVILEGE_ENABLED;
 		privileges->Privileges[i].Luid.HighPart = 0;
+		privileges->Privileges[i].Luid.LowPart = iArrayPrivileges[i];
 	}
-	
-	privileges->Privileges[0].Luid.LowPart = SE_DEBUG_PRIVILEGE;
-	privileges->Privileges[1].Luid.LowPart = SE_INC_BASE_PRIORITY_PRIVILEGE;
-	privileges->Privileges[2].Luid.LowPart = SE_INC_WORKING_SET_PRIVILEGE;
-	privileges->Privileges[3].Luid.LowPart = SE_LOAD_DRIVER_PRIVILEGE;
-	privileges->Privileges[4].Luid.LowPart = SE_PROF_SINGLE_PROCESS_PRIVILEGE;
-	privileges->Privileges[5].Luid.LowPart = SE_BACKUP_PRIVILEGE;
-	privileges->Privileges[6].Luid.LowPart = SE_RESTORE_PRIVILEGE;
-	privileges->Privileges[7].Luid.LowPart = SE_SHUTDOWN_PRIVILEGE;
-	privileges->Privileges[8].Luid.LowPart = SE_TAKE_OWNERSHIP_PRIVILEGE;
 	
 	AdjustTokenPrivileges(hToken,                  //HANDLE
 						  FALSE,                   //BOOL(DisableAllPrivileges

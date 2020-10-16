@@ -65,13 +65,15 @@ void CProcessCPUListCtrl::UpdateData()
 	int iLstCnt = this->GetItemCount();
 
 	wxString strCPUUsage(wxT(""));
-		
+	unsigned long ulTotalCPUUsage = theSystemInfo->GetCPUUsage();
+	
 	for (int i = 0; i < iLstCnt; i++)
 	{
 		wxString strProcessID = this->GetItemText(i, 1);
 		unsigned long ulProcessID = 0;
 		
 		strProcessID.ToCULong(&ulProcessID);
+		
 		strCPUUsage = wxT("0.0");
 		float fCPUUsage = 0.0f;
 		if (theSystemInfo->GetExistProcess(ulProcessID))
@@ -79,16 +81,23 @@ void CProcessCPUListCtrl::UpdateData()
 			PROCESS_INFO* pProcessInfo = theSystemInfo->GetProcessInfo(ulProcessID);
 			fCPUUsage = pProcessInfo->fCPUUsage;
 			
-			strCPUUsage = wxString::Format(wxT("%.2f"), fCPUUsage);
+			strCPUUsage = wxString::Format(wxT("%.2f%"), fCPUUsage);
 		}
 		
-		SetTextBackgroundColor(i, fCPUUsage);
-		this->SetItem(i, 2, strCPUUsage + wxT("%"));
+		if(ulProcessID == 0)
+		{
+			fCPUUsage = 100.0f - (ulTotalCPUUsage * 1.0f);
+			strCPUUsage = wxString::Format(wxT("%.2f%"), fCPUUsage);
+		}	
+		else
+			SetTextBackgroundColor(i, fCPUUsage);
+			
+		this->SetItem(i, 2, strCPUUsage);
 		this->SetItemData(i, (LPARAM)(fCPUUsage * 100000.0f));
 		
 		SetItemState(i, 0, wxLIST_STATE_SELECTED);
 	}
-	
+		
 	this->SortItems(CCommonProcessListCtrl::ListCompareFunction, 0);
 	LeaveCriticalSection(&m_criSection);
 }
