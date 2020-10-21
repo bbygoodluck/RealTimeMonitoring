@@ -159,7 +159,7 @@ void CProcessTotalListCtrl::UpdateData()
 		wxColour col;
 		if(m_bSelected && m_iSelectedTime < 4)
 		{
-			SelectedItem(iSelectedItemIndex);
+		//	SelectedItem(iSelectedItemIndex);
 			col = wxColour(0, 255, 255);
 			m_iSelectedTime++;
 		}
@@ -170,7 +170,7 @@ void CProcessTotalListCtrl::UpdateData()
 			m_ulSelProcessID = 0;
 			if(m_processForegroundWndID != _ulForegroundProcessID)
 			{
-				SelectedItem(iSelectedItemIndex);
+			//	SelectedItem(iSelectedItemIndex);
 				m_processForegroundWndID = _ulForegroundProcessID;
 			}
 		}

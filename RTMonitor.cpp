@@ -17,7 +17,7 @@ CRealTimeMonitor::~CRealTimeMonitor()
 bool CRealTimeMonitor::OnInit()
 {
 	theCommonUtil->LoadImageList();
-#ifdef _WXRELEASE
+#ifdef NDEBUG
 	m_pSingleInstance = new wxSingleInstanceChecker;
 	if (m_pSingleInstance->IsAnotherRunning())
 	{
