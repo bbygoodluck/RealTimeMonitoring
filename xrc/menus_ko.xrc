@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxMenuBar" name="RTMenu">
+		<label></label>
+		<object class="wxMenu" name="m_menuFile">
+			<label>파일(_F)</label>
+			<object class="wxMenuItem" name="m_fMenu_Exec">
+				<label>새 작업 실행(_N)</label>
+				<bitmap stock_id = "wxART_GO_FORWARD" />
+				<accel>Alt+F4</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_Exit">
+				<label>프로그램 종료</label>
+				<bitmap stock_id = "wxART_QUIT" />
+				<accel>Alt+F4</accel>
+				<help></help>
+			</object>
+		</object>
+		<object class="wxMenu" name="m_menuSetting">
+			<label>도구(_T)</label>
+			<object class="wxMenuItem" name="m_sMenu_SetEnv">
+				<label>환경설정</label>
+				<accel></accel>
+				<bitmap stock_id = "wxART_WX_LOGO" />
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_sMenu_SetSave">
+				<label>현재상태 저장</label>
+				<accel>Ctrl+S</accel>
+				<bitmap stock_id = "wxART_FILE_SAVE" />
+				<help></help>
+			</object>
+		</object>
+	</object>
+</resource>

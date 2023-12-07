@@ -1,0 +1,15 @@
+{
+    "settings": {
+        "DispMonitor": 0,
+        "Maximized": 1,
+        "XPos": -8,
+        "YPos": -8,
+        "Width": 2576,
+        "Height": 1426,
+        "ListPostion": 1,
+        "TaskBarShow": 1,
+        "CPUMaxCheck": 25,
+        "MEMMaxCheck": 20,
+		"DBName" : "ProcessList.db"
+    }
+}
